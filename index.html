@@ -13,28 +13,54 @@
             <div class="flex flex-col gap-8 items-center">
                 <header class="text-4xl font-bold text-blue-500 mb-4">CT of my Tooth</header>
 
-                <div 
-                    class="w-full border-2 border-blue-500 rounded-lg bg-no-repeat" 
-                    :style="`
-               background-image: url('${imagePath}'); 
-               aspect-ratio: ${frameWidth} / ${frameHeight};
-               background-size: 600% 300%;
-               background-position: ${backgroundPosition};
-             `">
+                <!-- Loading State -->
+                <div x-show="isImageLoading"
+                    class="w-full border-2 border-blue-500 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-800"
+                    :style="`aspect-ratio: ${frameWidth} / ${frameHeight};`">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                        <p class="text-blue-500 font-medium">Loading CT image...</p>
+                    </div>
                 </div>
 
-                <div class="flex flex-col gap-6 items-center">
+                <!-- Error State -->
+                <div x-show="imageLoadError"
+                    class="w-full border-2 border-red-500 rounded-lg flex items-center justify-center bg-red-50 dark:bg-red-900/20"
+                    :style="`aspect-ratio: ${frameWidth} / ${frameHeight};`">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="text-red-500 text-4xl">⚠️</div>
+                        <p class="text-red-500 font-medium text-center">Failed to load CT images</p>
+                        <button @click="retryImageLoad"
+                            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
+                            Retry
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loaded Image -->
+                <div x-show="isImageLoaded" class="w-full border-2 border-blue-500 rounded-lg bg-no-repeat" :style="`
+                       background-image: url('${imagePath}'); 
+                       aspect-ratio: ${frameWidth} / ${frameHeight};
+                       background-size: 600% 300%;
+                       background-position: ${backgroundPosition};
+                     `">
+                </div>
+
+                <div class="flex flex-col gap-6 items-center"
+                    :class="{ 'opacity-50 pointer-events-none': !isImageLoaded }">
                     <div class="flex items-center gap-4 w-full justify-center">
                         <label for="frame-input" class="font-medium min-w-[50px] text-right">Frame:</label>
                         <input type="number" id="frame-input" :min="1" :max="totalFrames" x-model.number="currentFrame"
-                            class="px-2 py-1 border border-blue-500 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white w-[60px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            :disabled="!isImageLoaded"
+                            class="px-2 py-1 border border-blue-500 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white w-[60px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         <span class="font-medium text-gray-400 min-w-[60px] text-left"
                             x-text="`${currentFrame} / ${totalFrames}`"></span>
                     </div>
 
                     <div class="flex items-center gap-4 w-full justify-center">
                         <input type="range" id="frame-slider" :min="1" :max="totalFrames" x-model.number="currentFrame"
-                            class="w-[200px] sm:w-[150px] h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer slider-thumb">
+                            :disabled="!isImageLoaded"
+                            class="w-[200px] sm:w-[150px] h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer slider-thumb disabled:opacity-50 disabled:cursor-not-allowed">
                     </div>
                 </div>
             </div>
