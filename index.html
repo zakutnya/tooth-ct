@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CT of my Tooth</title>
+    </head>
+
+    <body>
+        <div x-data="ctViewer" class="w-full max-w-md mx-auto p-8 text-center">
+            <div class="flex flex-col gap-8 items-center">
+                <header class="text-4xl font-bold text-blue-500 mb-4">CT of my Tooth</header>
+
+                <div 
+                    class="w-full border-2 border-blue-500 rounded-lg bg-no-repeat" 
+                    :style="`
+               background-image: url('${imagePath}'); 
+               aspect-ratio: ${frameWidth} / ${frameHeight};
+               background-size: 600% 300%;
+               background-position: ${backgroundPosition};
+             `">
+                </div>
+
+                <div class="flex flex-col gap-6 items-center">
+                    <div class="flex items-center gap-4 w-full justify-center">
+                        <label for="frame-input" class="font-medium min-w-[50px] text-right">Frame:</label>
+                        <input type="number" id="frame-input" :min="1" :max="totalFrames" x-model.number="currentFrame"
+                            class="px-2 py-1 border border-blue-500 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white w-[60px] text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <span class="font-medium text-gray-400 min-w-[60px] text-left"
+                            x-text="`${currentFrame} / ${totalFrames}`"></span>
+                    </div>
+
+                    <div class="flex items-center gap-4 w-full justify-center">
+                        <input type="range" id="frame-slider" :min="1" :max="totalFrames" x-model.number="currentFrame"
+                            class="w-[200px] sm:w-[150px] h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="/src/main.ts"></script>
+    </body>
+
+</html>
